@@ -1,2 +1,4 @@
 #misc
 .env
+cert.pem
+key.pem
