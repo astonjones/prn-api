@@ -1,20 +1,24 @@
 require('dotenv').config();
- 
+
 const bodyParser = require('body-parser');
 const express = require('express');
-const app = express();
+const cors = require('cors');
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
 const xhub = require('express-x-hub');
 const axios = require('axios');
-const cors = require('cors');
 const { MongoClient } = require('mongodb');
+
+const app = express();
+app.use(cors());
 
 const facebookRoutes = require('./routes/facebookapi');
 const googleRoutes = require('./routes/googleapi');
 
-app.set('port', (process.env.PORT || 5000));
-app.listen(app.get('port'));
+// app.set('port', (process.env.PORT || 5000));
+// app.listen(app.get('port'));
 
-app.use(cors());
 app.use(xhub({ algorithm: 'sha1', secret: process.env.APP_SECRET }));
 app.use(bodyParser.json());
 
@@ -69,6 +73,16 @@ MongoClient.connect(CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopolo
 app.use('/facebook', facebookRoutes);
 app.use('/google', googleRoutes);
 
-app.listen(() => {
-console.log("node server is running!");
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer({
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+}, app);
+
+httpServer.listen(5000, () => {
+    console.log('HTTP Server running on port 5000');
+});
+
+httpsServer.listen(8080, () => {
+    console.log('HTTPS server running on port 8080')
 });
