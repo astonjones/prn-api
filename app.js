@@ -3,6 +3,7 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 // const https = require('https');
 // const http = require('http');
 // const fs = require('fs');
@@ -20,6 +21,7 @@ const googleRoutes = require('./routes/googleapi');
 // app.set('port', (process.env.PORT || 5000));
 // app.listen(app.get('port'));
 
+app.use(express.static(path.join(__dirname, 'build'), {dotfiles: 'allow'}));
 app.use(xhub({ algorithm: 'sha1', secret: process.env.APP_SECRET }));
 app.use(bodyParser.json());
 
