@@ -4,11 +4,12 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
 const https = require('https');
-const http = require('http');
+// const http = require('http');
 const fs = require('fs');
 const xhub = require('express-x-hub');
 const axios = require('axios');
 const { MongoClient } = require('mongodb');
+// const port = process.env.PORT
 
 const app = express();
 app.use(cors());
@@ -73,15 +74,17 @@ MongoClient.connect(CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopolo
 app.use('/facebook', facebookRoutes);
 app.use('/google', googleRoutes);
 
-const httpServer = http.createServer(app);
+//http server - not needed in this instance
+// const httpServer = http.createServer(app);
 const httpsServer = https.createServer({
     key: fs.readFileSync('key.pem'),
     cert: fs.readFileSync('cert.pem')
 }, app);
 
-httpServer.listen(80, () => {
-    console.log('HTTP Server running on port 80');
-});
+// for Http requests, not need for API endpoints
+// httpServer.listen(80, () => {
+//     console.log('HTTP Server running on port 80');
+// });
 
 httpsServer.listen(443, () => {
     console.log('HTTPS server running on port 443')
