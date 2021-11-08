@@ -3,9 +3,9 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
-const https = require('https');
+// const https = require('https');
 // const http = require('http');
-const fs = require('fs');
+// const fs = require('fs');
 const xhub = require('express-x-hub');
 const axios = require('axios');
 const { MongoClient } = require('mongodb');
@@ -76,16 +76,20 @@ app.use('/google', googleRoutes);
 
 //http server - not needed in this instance
 // const httpServer = http.createServer(app);
-const httpsServer = https.createServer({
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
-}, app);
+// const httpsServer = https.createServer({
+//     key: fs.readFileSync('key.pem'),
+//     cert: fs.readFileSync('cert.pem')
+// }, app);
 
 // for Http requests, not need for API endpoints
 // httpServer.listen(80, () => {
 //     console.log('HTTP Server running on port 80');
 // });
 
-httpsServer.listen(443, () => {
-    console.log('HTTPS server running on port 443')
+// httpsServer.listen(443, () => {
+//     console.log('HTTPS server running on port 443')
+// });
+
+app.listen(5000, () => {
+    console.log('Server listening on port 5000');
 });
