@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
+//Authorization Keys
+const VERIFY_TOKEN = process.env.VERIFY_TOKEN || 'token';
+const APP_SECRET = process.env.APP_SECRET;
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
 //This route submits a bad request on get request
-router.get('/facebook', function(req, res) {
+router.get('/', function(req, res) {
     if (
         req.query['hub.mode'] == 'subscribe' &&
         req.query['hub.verify_token'] == VERIFY_TOKEN
@@ -16,7 +20,7 @@ router.get('/facebook', function(req, res) {
 });
 
     //This route gets called when a webhook occurs
-router.post('/facebook', async function(req, res) {
+router.post('/', async function(req, res) {
     console.log('Facebook request body:', req.body);
     if (!req.isXHubValid()) {
         console.log('Warning - request header X-Hub-Signature not present or invalid');
