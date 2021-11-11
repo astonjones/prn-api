@@ -45,7 +45,7 @@ if(req.body.google_key == GOOGLE_SECRET){
     });
 
     //Push to Vici Dialer
-    try { lead = await axios.post(`http://12.184.68.100/vicidial/non_agent_api.php?`, leadData) }
+    try { lead = await axios.post(`http://${VICI_IP}/vicidial/non_agent_api.php?`, leadData) }
     catch (err) { console.log(`AXIOS RESPONSE ERROR ==> ${err}`) }
 
     const dbConnect = dbo.getDb().g_db; //get the google DB inside of Atlas Cluster
