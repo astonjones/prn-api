@@ -27,7 +27,7 @@ if(req.body.google_key == GOOGLE_SECRET){
 
     array = req.body.user_column_data;
     array.forEach(element => {
-        //This deals parses the data from google into a viciDial data
+        //Parses the data from google into a viciDial data
         switch (element.column_id){
             case "FULL_NAME":
                 var nameArr = element.string_value.split(' ');
@@ -36,7 +36,7 @@ if(req.body.google_key == GOOGLE_SECRET){
                 console.log(`First Name: ${leadData.first_name} - Last Name: ${leadData.last_name}`);
                 break;
             case "PHONE_NUMBER":
-                ledaData.phone_number = element.string_value;
+                leadData.phone_number = element.string_value;
                 console.log(`The Phone number is: ${leadData.phone_number}`);
                 break;
             default:
@@ -45,13 +45,12 @@ if(req.body.google_key == GOOGLE_SECRET){
     });
 
     //Push to Vici Dialer
-    /*  
-        try { lead = await axios.post(`http://12.184.68.100/vicidial/non_agent_api.php?`, leadData) }
-        catch (err) { console.log(`AXIOS RESPONSE ERROR ==> ${err}`) }
-    */
+    try { lead = await axios.post(`http://12.184.68.100/vicidial/non_agent_api.php?`, leadData) }
+    catch (err) { console.log(`AXIOS RESPONSE ERROR ==> ${err}`) }
 
     const dbConnect = dbo.getDb().g_db; //get the google DB inside of Atlas Cluster
 
+    //Push data to a database.
     dbConnect
         .collection('google-leads')
         .insertOne(req.body, function (err, result){
