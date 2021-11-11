@@ -10,7 +10,7 @@ router.get('/', function(req, res){
     res.status(400).send("Bad Request. You do not have access.");
 })
 
-router.post('/leadData', function(req, res){
+router.post('/leadData', async function(req, res){
 if(req.body.google_key == GOOGLE_SECRET){
     //url parameters to send with post request
     const leadData  = {
