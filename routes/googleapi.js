@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
+const https = require('https');
 const dbo = require('../db/conn'); //DB connection
 const GOOGLE_SECRET = process.env.GOOGLE_SECRET;
 const VICI_USER = process.env.VICI_USER;
@@ -10,10 +10,10 @@ router.get('/', function(req, res){
     res.status(400).send("Bad Request. You do not have access.");
 })
 
-router.post('/leadData', async function(req, res){
+router.post('/leadData', function(req, res){
 if(req.body.google_key == GOOGLE_SECRET){
     //url parameters to send with post request
-    const leadData  = {
+    const params  = JSON.stringify({
         phone_code: "1",
         list_id: "98769876", //ASSIGNED TO TEST LIST
         source: "This lead is coming from google ads.",
@@ -23,7 +23,17 @@ if(req.body.google_key == GOOGLE_SECRET){
         first_name: "",
         last_name: "",
         phone_number: ""
-    };
+    });
+
+    //options for https request
+    const options = {
+        hostname: `http://${VICI_IP}/vicidial/non_agent_api.php?`,
+        port: 443,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
 
     array = req.body.user_column_data;
     array.forEach(element => {
@@ -45,8 +55,20 @@ if(req.body.google_key == GOOGLE_SECRET){
     });
 
     //Push to Vici Dialer
-    try { lead = await axios.post(`http://${VICI_IP}/vicidial/non_agent_api.php?`, leadData) }
-    catch (err) { console.log(`AXIOS RESPONSE ERROR ==> ${err}`) }
+    var req = https.request(options, res => {
+        console.log(`statusCode: ${res.statusCode}`)
+
+        res.on('data', d => {
+            process.stdout.write(d)
+        });
+    });
+
+    req.on('error', (e) => {
+        console.error(e);
+    });
+
+    req.write(params);
+    req.end();
 
     const dbConnect = dbo.getDb().g_db; //get the google DB inside of Atlas Cluster
 
