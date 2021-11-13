@@ -29,18 +29,6 @@ if(req.body.google_key == GOOGLE_SECRET){
         phone_number: ""
     });
 
-    //options for https request
-    const options = {
-        hostname: `${VICI_IP}`,
-        port: 443,
-	path: '/vicidial/non_agent_api.php?',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-	    'Content-Length': params.length
-        }
-    }
-
     array = req.body.user_column_data;
     array.forEach(element => {
         //Parses the data from google into a viciDial data
@@ -60,22 +48,13 @@ if(req.body.google_key == GOOGLE_SECRET){
         }
     });
 
-    console.log("code at least gets here");
-    //Push to Vici Dialer
-    let requ = https.request(options, res => {
-        console.log(`statusCode: ${res.statusCode}`)
-
-        res.on('data', d => {
-            process.stdout.write(d)
-        });
-    })
-
-    requ.on('error', (e) => {
-        console.error(e);
-    })
-
-    requ.write(params)
-    requ.end()
+    //push data to vici 
+    axios.post(`http://${VICI_IP}/vicidial/non_agent_api.php`, {}, params)
+        .then(res => {
+            console.log("axios request went through")
+            console.log(`statusCode: ${res.status}`);
+        })
+        .catch(error => { console.error(error)});
 
     const dbConnect = dbo.getDb().g_db; //get the google DB inside of Atlas Cluster
 
