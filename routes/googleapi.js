@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const https = require('https');
@@ -12,22 +13,18 @@ router.use(bodyParser.json());
 
 router.get('/', function(req, res){
     res.status(400).send("Bad Request. You do not have access.");
-})
+});
 
 router.post('/leadData', async function(req, res){
 if(req.body.google_key == GOOGLE_SECRET){
     //url parameters to send with post request
-    const params = JSON.stringify({
-        phone_code: "1",
-        list_id: "98769876", //ASSIGNED TO TEST LIST
+    const params = {
+        list_id: "404040", //ASSIGNED TO TEST LIST
         source: "This lead is coming from google ads.",
-        function: "add_lead",
-        user: `${VICI_USER}`,
-        pass: `${VICI_PASS}`,
         first_name: "",
         last_name: "",
         phone_number: ""
-    });
+    };
 
     array = req.body.user_column_data;
     array.forEach(element => {
@@ -48,11 +45,10 @@ if(req.body.google_key == GOOGLE_SECRET){
         }
     });
 
-    //push data to vici 
-    axios.post(`http://${VICI_IP}/vicidial/non_agent_api.php`, {}, params)
+    //push data to vici
+    axios.post(`http://${VICI_IP}/vicidial/non_agent_api.php?source=${params.source}&user=${VICI_USER}&pass=${VICI_PASS}&function=add_lead&phone_number=${params.phone_number}&phone_code=1&list_id=${params.list_id}&first_name=${params.first_name}&last_name=${params.last_name}`)
         .then(res => {
-            console.log("axios request went through")
-            console.log(`statusCode: ${res.status}`);
+            console.log("Pushed lead to vici.");
         })
         .catch(error => { console.error(error)});
 
@@ -66,7 +62,7 @@ if(req.body.google_key == GOOGLE_SECRET){
                 res.status(400).send('Error inserting data into Atlas Cluster');
             } else {
                 console.log(`Added a new record into Atlas Cluster From Google`);
-                res.status(204).send();
+                res.status(200).send();
             }
     });
 } else {
