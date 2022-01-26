@@ -5,7 +5,6 @@ Stack:
 - nodejs
 - express
 - mongoDB
-- axios
 - AWS EC2
 
 This application is a simple api that handles leads that come from Facebook and Google.
