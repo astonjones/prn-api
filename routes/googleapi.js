@@ -17,7 +17,7 @@ router.get('/', function(req, res){
 
 router.post('/leadData', async function(req, res){
 if(req.body.google_key == GOOGLE_SECRET){
-    //url parameters to send with post request
+
     const params = {
         list_id: "404040", //ASSIGNED TO TEST LIST
         source: "This lead is coming from google ads.",
@@ -34,12 +34,11 @@ if(req.body.google_key == GOOGLE_SECRET){
                 var nameArr = element.string_value.split(' ');
                 params.first_name = nameArr[0];
                 params.last_name = nameArr[1];
-		console.log("first name added")
                 break;
+
             case "PHONE_NUMBER":
                 params.phone_number = element.string_value;
-                console.log("phone number Added");
-		break;
+                break;
             default:
                 console.log(`ATTEMPTED TO IMPORT MISSING VALUE FROM GOOGLE LEAD. VALUE: ${element.column_id} DID NOT PROCESS CORRECTLY`);
         }
@@ -50,7 +49,7 @@ if(req.body.google_key == GOOGLE_SECRET){
         .then(res => {
             console.log("Pushed lead to vici.");
         })
-        .catch(error => { console.error(error)});
+        .catch(error => { console.error(error) });
 
     const dbConnect = dbo.getDb().g_db; //get the google DB inside of Atlas Cluster
 

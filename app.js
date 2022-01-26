@@ -28,30 +28,9 @@ if (!(APP_SECRET && VERIFY_TOKEN && ACCESS_TOKEN)) {
     process.exit(1);
 }
 
-//index route
 app.get('/', function(req, res) {
     res.sendFile('/index.html' , { root : __dirname});
 });
-    
-//This route submits a bad request on get request - used for instagram(Currently not in use)
-// app.get('/instagram', function(req, res) {
-//     if (req.query['hub.mode'] == 'subscribe' &&
-//         req.query['hub.verify_token'] == VERIFY_TOKEN) 
-//     {
-//         res.send(req.query['hub.challenge']);
-//     } else {
-//     res.sendStatus(400);
-//     }
-// });
-
-//instagram post request (Currently not in use)
-// app.post('/instagram', function(req, res) {
-//     console.log('Instagram request body:');
-//     console.log(req.body);
-//     // Process the Instagram updates here
-//     received_updates.unshift(req.body);
-//     res.sendStatus(200);
-// });
 
 //Routes in other folders
 const facebookRoutes = require('./routes/facebookapi');
